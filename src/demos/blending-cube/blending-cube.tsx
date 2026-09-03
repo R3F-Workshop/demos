@@ -3,7 +3,7 @@ import { EnvironmentMap, useFrame } from "@react-three/fiber/webgpu";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three/webgpu";
 
-import { createStudioEnvironment, type StudioOptions } from "@/canvas/studio-env";
+import { createStudioEnvironment, type StudioOptions } from "@/lib/studio-env";
 import type { BlendingCubeConfig } from "./config";
 
 /** One box, gaining a capability at a time. */

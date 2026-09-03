@@ -1,7 +1,7 @@
 import { EnvironmentMap } from "@react-three/fiber/webgpu";
 import { useEffect, useMemo } from "react";
 
-import { createStudioEnvironment, STUDIO_DEFAULT } from "@/canvas/studio-env";
+import { createStudioEnvironment, STUDIO_DEFAULT } from "@/lib/studio-env";
 import type { ConnectorsConfig } from "./config";
 
 /** What the bodies reflect and refract. */

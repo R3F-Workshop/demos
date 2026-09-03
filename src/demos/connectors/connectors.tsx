@@ -18,7 +18,6 @@ import type { ConnectorsConfig } from "./config";
 import { ConnectorsEnvironment } from "./environment";
 import { getShape, shapeRadius, type ShapeKind } from "./shapes";
 
-import { useSectionOnScreen } from "@/canvas/section-canvas";
 
 /** A container with no walls. */
 
@@ -78,15 +77,12 @@ export function ConnectorsScene({
   /** The element the cursor is measured against: the canvas's wrapper, not the canvas. */
   bounds: RefObject<HTMLElement | null>;
 }) {
-  // Body sleep (see `Bodies`) quiets a settled pile, but the solver still steps every frame.
-  const onScreen = useSectionOnScreen();
-
   return (
     <>
       <ConnectorsEnvironment config={config} />
       {/* Rapier's wasm arrives asynchronously and `<Physics>` suspends on it. */}
       <Suspense fallback={null}>
-        <Physics gravity={[0, 0, 0]} paused={!onScreen}>
+        <Physics gravity={[0, 0, 0]}>
           <Cursor bounds={bounds} radius={config.pointerRadius} />
           <Bodies config={config} />
         </Physics>
@@ -111,12 +107,8 @@ function Bodies({ config }: { config: ConnectorsConfig }) {
   const wanted = useRef(new Color());
 
   const palette = [config.dark, config.light, config.accent];
-  const onScreen = useSectionOnScreen();
 
   useFrame(({ viewport }, delta) => {
-    // Impulses land on velocities immediately, stepped or not.
-    if (!onScreen) return;
-
     const reach = (viewport.width / 2) * config.spreadX;
 
     bodies.forEach((body, i) => {

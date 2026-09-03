@@ -10,7 +10,7 @@ if (!FONT_DIR) {
   process.exit(1);
 }
 
-const OUT = new URL("../src/lib/ten-glyphs.ts", import.meta.url);
+const OUT = new URL("../src/demos/magic-box/ten-glyphs.ts", import.meta.url);
 
 /** Curve flattening. 12 is past the point where more segments read on screen. */
 const STEPS = 12;
@@ -296,7 +296,7 @@ const total = faces.reduce(
   0,
 );
 console.log(
-  `wrote src/lib/ten-glyphs.ts — ${faces.length} faces, ${total} points\n` +
+  `wrote src/demos/magic-box/ten-glyphs.ts — ${faces.length} faces, ${total} points\n` +
     faces
       .map(
         (f) =>

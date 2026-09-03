@@ -30,11 +30,12 @@ import {
 
 import type { TextLayer } from "./fx";
 import { INTRO_COMPLETE, LETTER_CHAIN_START } from "./intro";
+import FONT_URL from "./Geist-ExtraBold.font.glb?url";
 
 /** Billboarded MSDF letters render in a full-resolution pass. */
 
 const FONT_REQUEST = {
-  input: { baked: "/hero-demo/Geist-ExtraBold.font.glb" },
+  input: { baked: FONT_URL },
   raster: { technique: msdf },
 } as const;
 

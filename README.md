@@ -21,7 +21,7 @@ that lets rapier 2.x install against R3F 10 (see below); npm doesn't read it.
 
 ## Routes
 
-The index at `/` lists every demo. Each demo is `/<slug>`:
+Each demo is `/<slug>`; there is no index page:
 
 | Route | What it is |
 | --- | --- |
@@ -34,9 +34,10 @@ The index at `/` lists every demo. Each demo is `/<slug>`:
 | `/takehome-grid` | Six tiles turning over to name the other demos. |
 | `/block-city` | A few hundred instanced blocks rising and settling. |
 
-Routing is a few lines in `src/main.tsx` reading `location.pathname`. The dev
+Routing is a few lines in `src/main.tsx`: every `src/demos/<slug>/page.tsx` is
+a route at `/<slug>`, so a new demo is a new folder and nothing else. The dev
 server and `vite preview` fall back to `index.html` for deep links; a static
-host needs the same rewrite (or link through the index).
+host needs the same rewrite.
 
 Add `?debug` to any demo for the Leva panel, or use the button top right.
 `?no3d` forces the no-WebGPU state.
@@ -45,21 +46,15 @@ Add `?debug` to any demo for the Leva panel, or use the button top right.
 
 | Path | What it is |
 | --- | --- |
-| `src/demos.ts` | The registry: slug, copy, and the lazy page import for each demo. |
-| `src/demos/<slug>/` | One folder per demo: `page.tsx` (title plate and write-up), the Leva wrapper, `scene.tsx` (its own `<Canvas>`), and the scene itself. |
+| `src/demos/<slug>/` | One folder per demo. `page.tsx` is the route (default export: title plate and write-up), the Leva wrapper, `scene.tsx` (its own `<Canvas>`), and the scene itself. Models and textures sit in the folder too, imported with `?url`. |
 | `src/demos/paris-hero/tower-scene/` | The full hero pipeline the Paris hero runs on. |
 | `src/components/` | The demo chrome: info dialog, controls toggle, WebGPU gate, LevaPanel, DepthAttachmentSync. |
-| `src/canvas/` | Studio environment generator, camera rig, and the shared-renderer SectionCanvas the magic box can also run in. |
-| `src/lib/` | WebGPU detection, `cn`, the hero gate state machine, the glyph data. |
+| `src/lib/` | WebGPU detection, `cn`, the generated studio environment. |
 | `vendor/pmndrs-sky` | Vendored `@pmndrs/sky` build (`link:` dep). `pnpm sync:sky` re-copies it from a local sky checkout (`SKY_REPO`); the checked-in `dist/` means fresh clones need nothing. |
-| `scripts/build-glyphs.mjs` | Regenerates `src/lib/ten-glyphs.ts` from a folder of fonts: `pnpm build:glyphs <font-dir>`. |
-| `public/hero-demo`, `public/models` | The tower model, the baked wordmark font, the sky cubemap, and the magic box room. |
+| `scripts/build-glyphs.mjs` | Regenerates `src/demos/magic-box/ten-glyphs.ts` from a folder of fonts: `pnpm build:glyphs <font-dir>`. |
 
 ## Things that look odd but are load-bearing
 
-- `vite.config.ts` aliases `three/addons/inspector/Inspector.js` to a stub.
-  It breaks an import cycle in the R3F v10 alpha. Remove it and the first
-  `@react-three/fiber/webgpu` import throws.
 - `pnpm-workspace.yaml` allows rapier 2.x to peer against R3F 10. The range
   upstream is stale, not wrong: rapier only uses `useFrame` and `useThree`, and
   R3F v10 shares its store across entries through a global symbol, so hooks

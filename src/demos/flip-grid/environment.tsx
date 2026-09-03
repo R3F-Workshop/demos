@@ -2,7 +2,7 @@ import { EnvironmentMap } from "@react-three/fiber/webgpu";
 import { useEffect, useMemo } from "react";
 
 import type { FlipGridConfig } from "./config";
-import { createStudioEnvironment, ENV_PRESETS } from "@/canvas/studio-env";
+import { createStudioEnvironment, ENV_PRESETS } from "@/lib/studio-env";
 
 /** Builds the environment the gold reflects and hands it to the scene. */
 export function FlipGridEnvironment({ config }: { config: FlipGridConfig }) {

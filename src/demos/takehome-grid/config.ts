@@ -67,12 +67,3 @@ export const TAKEHOME_GRID_DEFAULTS: TakehomeGridConfig = {
   ambient: 0.55,
   keyIntensity: 2.2,
 };
-
-/** The card slot is 190px tall and the tiles have to stay legible in it, so the site preset runs the sequence slower and holds the reveal longer. */
-export const TAKEHOME_GRID_SITE: TakehomeGridConfig = {
-  ...TAKEHOME_GRID_DEFAULTS,
-  stagger: 0.3,
-  hold: 3.4,
-  ambient: 0.6,
-  keyIntensity: 1.9,
-};

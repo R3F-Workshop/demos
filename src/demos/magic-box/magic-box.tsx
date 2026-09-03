@@ -4,14 +4,11 @@ import { useControls } from "leva";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three/webgpu";
 
-import { TEN_GLYPHS, type TenGlyph } from "@/lib/ten-glyphs";
-import { CameraRig } from "@/canvas/camera-rig";
-import { LevaPanel } from "@/components/leva-panel";
-import { SectionCanvas } from "@/canvas/section-canvas";
+import { TEN_GLYPHS, type TenGlyph } from "./ten-glyphs";
+import { CameraRig } from "./camera-rig";
+import MODEL from "./aobox.glb?url";
 
 /** Ten, written six ways: one per face of a portal cube. */
-
-const MODEL = "/models/aobox.glb";
 
 /** One entry per boxGeometry material slot, in three's order: +x, -x, +y, -y, +z, -z. */
 const FACES = [
@@ -250,27 +247,6 @@ export function MagicBoxScene() {
       <color attach="background" args={["#0b0b0e"]} />
       <Box />
       <CameraRig />
-    </>
-  );
-}
-
-/** In-page version: a secondary canvas borrowing the hero's renderer. */
-export function MagicBoxCanvas({
-  camera = BOX_CAMERA,
-}: {
-  camera?: { position: readonly [number, number, number]; fov: number };
-} = {}) {
-  return (
-    <>
-      <LevaPanel />
-      <SectionCanvas
-        interactive
-        // It is the one thing on the page you can grab, so it gets a real framerate rather than the backdrop budget.
-        fps={60}
-        camera={camera}
-      >
-        <MagicBoxScene />
-      </SectionCanvas>
     </>
   );
 }

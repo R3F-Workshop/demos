@@ -95,12 +95,6 @@ export default function BlendingCubeDemoPage() {
 
         <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 border-t border-border pt-5">
           <a
-            href="/"
-            className="text-[13.5px] text-muted-foreground underline underline-offset-4 hover:text-foreground"
-          >
-            All demos →
-          </a>
-          <a
             href="https://threejs.paris/workshop"
             className="text-[13.5px] text-muted-foreground underline underline-offset-4 hover:text-foreground"
           >

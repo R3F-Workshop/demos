@@ -104,12 +104,6 @@ export default function GrainGradientDemoPage() {
 
         <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 border-t border-border pt-5">
           <a
-            href="/"
-            className="text-[14px] text-foreground underline underline-offset-4"
-          >
-            All demos →
-          </a>
-          <a
             href="https://threejs.paris/workshop"
             className="text-[14px] text-muted-foreground underline underline-offset-4"
           >

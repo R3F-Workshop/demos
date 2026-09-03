@@ -18,7 +18,7 @@ import * as TSL from "three/tsl";
 import * as THREE from "three/webgpu";
 
 
-const MODEL_URL = "/hero-demo/free__la_tour_eiffel.glb";
+import MODEL_URL from "./free__la_tour_eiffel.glb?url";
 
 const TOWER_MESHES = ["Object_4", "Object_5", "Object_6"] as const;
 

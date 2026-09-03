@@ -1,7 +1,7 @@
 
 import { InfoDialog, InfoSection } from "@/components/info-dialog";
 import { MagicBoxStandalone } from "./magic-box-standalone";
-import { TEN_GLYPHS } from "@/lib/ten-glyphs";
+import { TEN_GLYPHS } from "./ten-glyphs";
 
 export default function MagicBoxDemoPage() {
   return (

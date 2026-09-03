@@ -1,6 +1,13 @@
 import { Environment } from "@react-three/drei";
 import type { ColorRepresentation } from "three";
 
+import px from "./sky/px.png";
+import nx from "./sky/nx.png";
+import py from "./sky/py.png";
+import ny from "./sky/ny.png";
+import pz from "./sky/pz.png";
+import nz from "./sky/nz.png";
+
 
 export function Lights({
   shadowRadius = 60,
@@ -24,8 +31,7 @@ export function Lights({
       {/* Night sky cubemap, image-based lighting only: the sky itself is the scene background. */}
       {environment && (
         <Environment
-          files={["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"]}
-          path="/hero-demo/sky_81_cubemap_2k/"
+          files={[px, nx, py, ny, pz, nz]}
           environmentIntensity={0.12}
           blur={0.5}
         />
