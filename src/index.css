@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Design-doc greys with no shadcn equivalent. */
+  --color-hair: var(--hair);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-ghost: var(--ghost);
+
+  --radius-sm: calc(var(--radius) * 0.58);
+  --radius-md: calc(var(--radius) * 0.67);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+/* Dark only, the same palette as the workshop site. */
+:root {
+  --background: #000000;
+  --foreground: #fafafa;
+
+  --card: #08080a;
+  --card-foreground: #fafafa;
+
+  --muted: #1c1c1f;
+  --muted-foreground: #a1a1aa;
+
+  --border: #1c1c1f;
+  --input: #27272a;
+  --ring: #52525b;
+
+  --hair: #141416;
+  --dim: #71717a;
+  --faint: #52525b;
+  --ghost: #3f3f46;
+
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}

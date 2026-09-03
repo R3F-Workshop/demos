@@ -1,0 +1,72 @@
+# R3F workshop demos
+
+The standalone demos from the Advanced React Three Fiber workshop, each on its
+own page with Leva controls and a teaching write-up. Made with React Three
+Fiber v10 (`@react-three/fiber/webgpu`), drei 11 alpha (patched), three r185.
+
+Every demo needs WebGPU. There is no WebGL fallback, by design.
+
+## Install
+
+```sh
+corepack enable          # pnpm is pinned via packageManager
+pnpm install
+pnpm dev                 # http://localhost:5173
+pnpm build               # tsc, then vite build into dist/
+pnpm preview
+```
+
+**pnpm, not npm.** The repo carries pnpm patches for drei and rapier in
+`patches/` (wired up in `pnpm-workspace.yaml`); installing with npm silently
+skips them and the build fails.
+
+## Routes
+
+The index at `/` lists every demo. Each demo is `/<slug>`:
+
+| Route | What it is |
+| --- | --- |
+| `/paris-hero` | The workshop site's hero: tower, generated Paris, `@pmndrs/sky`, FSR3, one MRT post graph. |
+| `/magic-box` | A portal cube, six faces, the numeral ten in six writing systems. |
+| `/grain-gradient` | Drifting blobs under a static sheet of grain, in TSL. |
+| `/flip-grid` | Tiles that flip under the cursor, state in a storage buffer, integrated by a compute pass. |
+| `/connectors` | A Rapier pile held by a spring rather than a box, after Lusion's connectors. |
+| `/blending-cube` | One mesh gaining edges, contact shadows, metalness, then an environment. |
+| `/takehome-grid` | Six tiles turning over to name the other demos. |
+| `/block-city` | A few hundred instanced blocks rising and settling. |
+
+Routing is a few lines in `src/main.tsx` reading `location.pathname`. The dev
+server and `vite preview` fall back to `index.html` for deep links; a static
+host needs the same rewrite (or link through the index).
+
+Add `?debug` to any demo for the Leva panel, or use the button top right.
+`?no3d` forces the no-WebGPU state.
+
+## Where things are
+
+| Path | What it is |
+| --- | --- |
+| `src/demos.ts` | The registry: slug, copy, and the lazy page import for each demo. |
+| `src/demos/<slug>/` | One folder per demo: `page.tsx` (title plate and write-up), the Leva wrapper, `scene.tsx` (its own `<Canvas>`), and the scene itself. |
+| `src/demos/paris-hero/tower-scene/` | The full hero pipeline the Paris hero runs on. |
+| `src/components/` | The demo chrome: info dialog, controls toggle, WebGPU gate, LevaPanel, DepthAttachmentSync. |
+| `src/canvas/` | Studio environment generator, camera rig, and the shared-renderer SectionCanvas the magic box can also run in. |
+| `src/lib/` | WebGPU detection, `cn`, the hero gate state machine, the glyph data. |
+| `vendor/pmndrs-sky` | Vendored `@pmndrs/sky` build (`link:` dep). `pnpm sync:sky` re-copies it from a local sky checkout (`SKY_REPO`); the checked-in `dist/` means fresh clones need nothing. |
+| `scripts/build-glyphs.mjs` | Regenerates `src/lib/ten-glyphs.ts` from a folder of fonts: `pnpm build:glyphs <font-dir>`. |
+| `public/hero-demo`, `public/models` | The tower model, the baked wordmark font, the sky cubemap, and the magic box room. |
+
+## Things that look odd but are load-bearing
+
+- `vite.config.ts` aliases `three/addons/inspector/Inspector.js` to a stub.
+  It breaks an import cycle in the R3F v10 alpha. Remove it and the first
+  `@react-three/fiber/webgpu` import throws.
+- `pnpm-workspace.yaml` allows rapier 2.x to peer against R3F 10. The range
+  upstream is stale, not wrong; the patch repoints its imports at the WebGPU
+  entry.
+- `components/depth-attachment-sync.tsx` works around a three.js multi-canvas
+  depth bug and belongs inside every `<Canvas>`.
+
+These demos came out of the workshop site repo
+([R3F-Workshop/workshop-fallback](https://github.com/R3F-Workshop/workshop-fallback)),
+where the section scenes still live in the folders that own them.
