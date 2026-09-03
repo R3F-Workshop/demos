@@ -2,7 +2,7 @@
 
 The standalone demos from the Advanced React Three Fiber workshop, each on its
 own page with Leva controls and a teaching write-up. Made with React Three
-Fiber v10 (`@react-three/fiber/webgpu`), drei 11 alpha (patched), three r185.
+Fiber v10 (`@react-three/fiber/webgpu`), drei 11 alpha, three r185.
 
 Every demo needs WebGPU. There is no WebGL fallback, by design.
 
@@ -16,9 +16,8 @@ pnpm build               # tsc, then vite build into dist/
 pnpm preview
 ```
 
-**pnpm, not npm.** The repo carries pnpm patches for drei and rapier in
-`patches/` (wired up in `pnpm-workspace.yaml`); installing with npm silently
-skips them and the build fails.
+**pnpm, not npm.** `pnpm-workspace.yaml` carries the peer-dependency override
+that lets rapier 2.x install against R3F 10 (see below); npm doesn't read it.
 
 ## Routes
 
@@ -62,8 +61,9 @@ Add `?debug` to any demo for the Leva panel, or use the button top right.
   It breaks an import cycle in the R3F v10 alpha. Remove it and the first
   `@react-three/fiber/webgpu` import throws.
 - `pnpm-workspace.yaml` allows rapier 2.x to peer against R3F 10. The range
-  upstream is stale, not wrong; the patch repoints its imports at the WebGPU
-  entry.
+  upstream is stale, not wrong: rapier only uses `useFrame` and `useThree`, and
+  R3F v10 shares its store across entries through a global symbol, so hooks
+  imported from the root entry still find the WebGPU `<Canvas>`.
 - `components/depth-attachment-sync.tsx` works around a three.js multi-canvas
   depth bug and belongs inside every `<Canvas>`.
 
