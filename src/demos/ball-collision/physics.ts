@@ -1,108 +1,74 @@
-import type { Ball, Bounds } from "./types";
+import type { BallData } from "./store.ts";
 
-export function updateBalls(previous: Ball[], bounds: Bounds, delta: number, heldId?: number) {
-  if (delta <= 0 || !Number.isFinite(delta) || !previous.length) return previous;
+export type Bounds = { width: number; height: number };
 
-  // Work on a copy so React can read the previous frame until this one is ready.
-  const balls = previous.map((ball) => ({
-    ...ball,
-    position: { ...ball.position },
-    velocity: { ...ball.velocity },
-  }));
+export function moveBall({ position, velocity }: BallData, delta: number) {
+  position.x += velocity.x * delta;
+  position.y += velocity.y * delta;
 
-  // Short steps and a speed limit keep fast balls from skipping past each other.
-  const elapsed = Math.min(delta, 1 / 30);
-  const steps = Math.ceil(elapsed * 120);
-  const smallestRadius = Math.min(...balls.map((ball) => ball.radius));
-  const speedLimit = Math.min(1_500, smallestRadius * 120);
-
-  for (const ball of balls) limitSpeed(ball, speedLimit);
-  for (let i = 0; i < steps; i++) {
-    moveBalls(balls, elapsed / steps, heldId);
-    collideBalls(balls, heldId);
-    collideWithWalls(balls, bounds);
-    for (const ball of balls) limitSpeed(ball, speedLimit);
-  }
-  return balls;
+  // Friction slows the ball after release.
+  velocity.x *= 0.99 ** (delta * 60);
+  velocity.y *= 0.99 ** (delta * 60);
 }
 
-export function moveBalls(balls: Ball[], delta: number, heldId?: number) {
-  // Light friction lets a fling travel before settling.
-  const decay = Math.exp(-0.15 * delta);
-  for (const ball of balls) {
-    if (ball.id === heldId) {
-      // Pointer velocity fades when the hand stops moving.
-      ball.velocity.x *= Math.exp(-20 * delta);
-      ball.velocity.y *= Math.exp(-20 * delta);
-      continue;
-    }
-    ball.velocity.x *= decay;
-    ball.velocity.y *= decay;
-    ball.position.x += ball.velocity.x * delta;
-    ball.position.y += ball.velocity.y * delta;
+export function bounceOffWalls(ball: BallData, { width, height }: Bounds) {
+  const { position, velocity, radius } = ball;
+  const left = -width / 2 + radius;
+  const right = width / 2 - radius;
+  const bottom = -height / 2 + radius;
+  const top = height / 2 - radius;
+
+  if (position.x < left) {
+    position.x = left;
+    velocity.x = Math.abs(velocity.x);
+  } else if (position.x > right) {
+    position.x = right;
+    velocity.x = -Math.abs(velocity.x);
+  }
+
+  if (position.y < bottom) {
+    position.y = bottom;
+    velocity.y = Math.abs(velocity.y);
+  } else if (position.y > top) {
+    position.y = top;
+    velocity.y = -Math.abs(velocity.y);
   }
 }
 
-export function collideWithWalls(balls: Ball[], bounds: Bounds) {
-  for (const ball of balls) {
-    for (const axis of ["x", "y"] as const) {
-      const size = axis === "x" ? bounds.width : bounds.height;
-      const min = Math.min(ball.radius, size / 2);
-      const max = Math.max(min, size - ball.radius);
-      const clamped = Math.max(min, Math.min(max, ball.position[axis]));
-      // Bounce only when crossing a wall, not when already moving back inside.
-      if ((ball.position[axis] - clamped) * ball.velocity[axis] > 0) {
-        ball.velocity[axis] *= -0.9;
-      }
-      ball.position[axis] = clamped;
-    }
-  }
-}
-
-export function collideBalls(balls: Ball[], heldId?: number) {
-  // Test each pair once. This deliberately exposes the cost of more balls.
+export function collideBalls(balls: BallData[], heldId?: number) {
+  // Compare each pair once.
   for (let i = 0; i < balls.length; i++) {
-    const a = balls[i];
     for (let j = i + 1; j < balls.length; j++) {
+      const a = balls[i];
       const b = balls[j];
       const dx = b.position.x - a.position.x;
       const dy = b.position.y - a.position.y;
-      const radius = a.radius + b.radius;
-      if (Math.abs(dx) >= radius || Math.abs(dy) >= radius) continue;
-      const distanceSquared = dx * dx + dy * dy;
-      if (distanceSquared >= radius * radius) continue;
+      const distance = Math.hypot(dx, dy);
+      const overlap = a.radius + b.radius - distance;
+      if (overlap <= 0) continue;
 
-      const distance = Math.sqrt(distanceSquared);
-      const nx = distance > 0 ? dx / distance : 1;
-      const ny = distance > 0 ? dy / distance : 0;
-      // Mass follows area. A held ball pushes others without being pushed.
-      const inverseA = a.id === heldId ? 0 : 1 / (a.radius * a.radius);
-      const inverseB = b.id === heldId ? 0 : 1 / (b.radius * b.radius);
-      const inverseMass = inverseA + inverseB;
-      const overlap = (radius - distance) / inverseMass;
-      a.position.x -= nx * overlap * inverseA;
-      a.position.y -= ny * overlap * inverseA;
-      b.position.x += nx * overlap * inverseB;
-      b.position.y += ny * overlap * inverseB;
+      // The normal points from a to b. Coincident centers separate horizontally.
+      const normalX = distance === 0 ? 1 : dx / distance;
+      const normalY = distance === 0 ? 0 : dy / distance;
+      const moveA = a.id === heldId ? 0 : 1;
+      const moveB = b.id === heldId ? 0 : 1;
+      const share = moveA + moveB;
 
-      // Exchange momentum only when the balls are moving toward each other.
-      const approach = (b.velocity.x - a.velocity.x) * nx +
-        (b.velocity.y - a.velocity.y) * ny;
-      if (approach < 0) {
-        const impulse = -(1 + 0.9) * approach / inverseMass;
-        a.velocity.x -= impulse * nx * inverseA;
-        a.velocity.y -= impulse * ny * inverseA;
-        b.velocity.x += impulse * nx * inverseB;
-        b.velocity.y += impulse * ny * inverseB;
-      }
+      // Free balls each move halfway. A held ball stays under the pointer.
+      a.position.x -= normalX * overlap * moveA / share;
+      a.position.y -= normalY * overlap * moveA / share;
+      b.position.x += normalX * overlap * moveB / share;
+      b.position.y += normalY * overlap * moveB / share;
+
+      // Only exchange momentum when the balls are approaching.
+      const relativeSpeed = (b.velocity.x - a.velocity.x) * normalX +
+        (b.velocity.y - a.velocity.y) * normalY;
+      if (relativeSpeed >= 0) continue;
+      const impulse = -2 * relativeSpeed / share;
+      a.velocity.x -= impulse * normalX * moveA;
+      a.velocity.y -= impulse * normalY * moveA;
+      b.velocity.x += impulse * normalX * moveB;
+      b.velocity.y += impulse * normalY * moveB;
     }
-  }
-}
-
-export function limitSpeed(ball: Ball, max = 1_500) {
-  const speed = Math.hypot(ball.velocity.x, ball.velocity.y);
-  if (speed > max) {
-    ball.velocity.x *= max / speed;
-    ball.velocity.y *= max / speed;
   }
 }
