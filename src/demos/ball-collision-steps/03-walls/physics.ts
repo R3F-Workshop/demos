@@ -2,6 +2,15 @@ import type { BallData } from "./store.ts";
 
 export type Bounds = { width: number; height: number };
 
+export function moveBall({ position, velocity }: BallData, delta: number) {
+  position.x += velocity.x * delta;
+  position.y += velocity.y * delta;
+
+  // Friction slows the ball after release.
+  velocity.x *= 0.99 ** (delta * 60);
+  velocity.y *= 0.99 ** (delta * 60);
+}
+
 export function bounceOffWalls(ball: BallData, { width, height }: Bounds) {
   const { position, velocity, radius } = ball;
   const left = -width / 2 + radius;
