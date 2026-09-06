@@ -42,63 +42,52 @@ export function collideBalls(world: World) {
   const held = world.queryFirst(Drag);
 
   // Cache each page before comparing its balls.
-  world.query(Position, Velocity, Radius).useStores(([position, velocity, radius], layout) => {
-    const { entities, offsets, pageIds, pageStarts, pageCounts, pageCount } = layout;
+  const pages = world.query(Position, Velocity, Radius).getPages();
 
-    for (let p = 0; p < pageCount; p++) {
-      const pageA = pageIds[p];
-      const positionAX = position.x[pageA];
-      const positionAY = position.y[pageA];
-      const velocityAX = velocity.x[pageA];
-      const velocityAY = velocity.y[pageA];
-      const radiusAPage = radius.value[pageA];
-      const endA = pageStarts[p] + pageCounts[p];
+  for (const pageA of pages) {
+    const [{ x: positionAX, y: positionAY }, { x: velocityAX, y: velocityAY }, radiusAStore] = pageA.stores;
+    const radiusAPage = radiusAStore.value;
 
-      for (let i = pageStarts[p]; i < endA; i++) {
-        const a = offsets[i];
-        const radiusA = radiusAPage[a];
+    for (let i = 0; i < pageA.indices.length; i++) {
+      const a = pageA.indices[i];
+      const radiusA = radiusAPage[a];
 
-        for (let q = p; q < pageCount; q++) {
-          const pageB = pageIds[q];
-          const positionBX = position.x[pageB];
-          const positionBY = position.y[pageB];
-          const velocityBX = velocity.x[pageB];
-          const velocityBY = velocity.y[pageB];
-          const radiusBPage = radius.value[pageB];
-          const endB = pageStarts[q] + pageCounts[q];
+      for (let q = pageA.index; q < pages.length; q++) {
+        const pageB = pages[q];
+        const [{ x: positionBX, y: positionBY }, { x: velocityBX, y: velocityBY }, radiusBStore] = pageB.stores;
+        const radiusBPage = radiusBStore.value;
 
-          for (let j = Math.max(i + 1, pageStarts[q]); j < endB; j++) {
-            const b = offsets[j];
-            const dx = positionBX[b] - positionAX[a];
-            const dy = positionBY[b] - positionAY[a];
-            const distance = Math.hypot(dx, dy);
-            const overlap = radiusA + radiusBPage[b] - distance;
-            if (overlap <= 0) continue;
+        for (let j = q === pageA.index ? i + 1 : 0; j < pageB.indices.length; j++) {
+          const b = pageB.indices[j];
+          const dx = positionBX[b] - positionAX[a];
+          const dy = positionBY[b] - positionAY[a];
+          const distance = Math.hypot(dx, dy);
+          const overlap = radiusA + radiusBPage[b] - distance;
+          if (overlap <= 0) continue;
 
-            const normalX = distance === 0 ? 1 : dx / distance;
-            const normalY = distance === 0 ? 0 : dy / distance;
-            const moveA = entities[i] === held ? 0 : 1;
-            const moveB = entities[j] === held ? 0 : 1;
-            const share = moveA + moveB;
+          const normalX = distance === 0 ? 1 : dx / distance;
+          const normalY = distance === 0 ? 0 : dy / distance;
+          const moveA = pageA.entities[i] === held ? 0 : 1;
+          const moveB = pageB.entities[j] === held ? 0 : 1;
+          const share = moveA + moveB;
 
-            // Free balls separate while the held ball stays under the pointer.
-            positionAX[a] -= normalX * overlap * moveA / share;
-            positionAY[a] -= normalY * overlap * moveA / share;
-            positionBX[b] += normalX * overlap * moveB / share;
-            positionBY[b] += normalY * overlap * moveB / share;
+          // Free balls separate while the held ball stays under the pointer.
+          positionAX[a] -= normalX * overlap * moveA / share;
+          positionAY[a] -= normalY * overlap * moveA / share;
+          positionBX[b] += normalX * overlap * moveB / share;
+          positionBY[b] += normalY * overlap * moveB / share;
 
-            // Only exchange momentum when the balls are approaching.
-            const relativeSpeed = (velocityBX[b] - velocityAX[a]) * normalX +
-              (velocityBY[b] - velocityAY[a]) * normalY;
-            if (relativeSpeed >= 0) continue;
-            const impulse = -2 * relativeSpeed / share;
-            velocityAX[a] -= impulse * normalX * moveA;
-            velocityAY[a] -= impulse * normalY * moveA;
-            velocityBX[b] += impulse * normalX * moveB;
-            velocityBY[b] += impulse * normalY * moveB;
-          }
+          // Only exchange momentum when the balls are approaching.
+          const relativeSpeed = (velocityBX[b] - velocityAX[a]) * normalX +
+            (velocityBY[b] - velocityAY[a]) * normalY;
+          if (relativeSpeed >= 0) continue;
+          const impulse = -2 * relativeSpeed / share;
+          velocityAX[a] -= impulse * normalX * moveA;
+          velocityAY[a] -= impulse * normalY * moveA;
+          velocityBX[b] += impulse * normalX * moveB;
+          velocityBY[b] += impulse * normalY * moveB;
         }
       }
     }
-  });
+  }
 }

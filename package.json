@@ -21,7 +21,7 @@
     "@react-three/rapier": "^2.2.0",
     "camera-controls": "^3.1.0",
     "clsx": "^2.1.1",
-    "koota": "0.6.6-canary.6a5c1c2",
+    "koota": "0.6.6-canary.385cdc6",
     "leva": "^0.10.1",
     "lucide-react": "^1.29.0",
     "radix-ui": "^1.6.7",

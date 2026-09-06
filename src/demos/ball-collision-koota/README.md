@@ -15,7 +15,7 @@ The same red balls, drag and fling, walls, collisions, and Devtools as [the Zust
 
 The frame callback runs collisions, movement, then walls. It publishes the final positions once per ball so React renders all physics changes together.
 
-Movement and walls use `updateEach` with change detection disabled. Collisions use `useStores` and its layout to locate each ball's page and offset without copying each pair. The final `entity.changed(Position)` calls notify `useTrait`, including when collisions move a stationary ball.
+Movement and walls use `updateEach` with change detection disabled. Collisions use `getPages` to read each page's arrays and ball indices without copying each pair. The final `entity.changed(Position)` calls notify `useTrait`, including when collisions move a stationary ball.
 
 [devtools.tsx](devtools.tsx) calls `restart` when either slider changes. Restart destroys the old balls and spawns new ones, clearing their drag and momentum.
 
