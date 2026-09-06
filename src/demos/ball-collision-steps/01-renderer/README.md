@@ -6,10 +6,13 @@ Copy `page.tsx`, `scene.tsx`, and `ball.tsx` from [the simple demo](../../ball-c
 
 ## 1. Create the ball store
 
-Create `store.ts` with two balls. Position and velocity both use `{ x, y }`. Each ball gets an `id` for its React key and a `radius` for its size.
+It all begins with the data model. We are modeling the balls with position, velocity and radius. Create `store.ts` with `count` and `radius` as the settings to change.
 
 ```ts
 import { create } from "zustand";
+
+const count = 2;
+const radius = 40;
 
 export type Vec2 = { x: number; y: number };
 export type BallData = {
@@ -24,16 +27,27 @@ type BallStore = {
 };
 
 export const useBallStore = create<BallStore>(() => ({
-  balls: [
-    { id: 0, position: { x: -100, y: 0 }, velocity: { x: 40, y: 0 }, radius: 40 },
-    { id: 1, position: { x: 100, y: 0 }, velocity: { x: -40, y: 0 }, radius: 40 },
-  ],
+  balls: createBalls(count, radius),
 }));
+
+function createBalls(count: number, radius: number): BallData[] {
+  return Array.from({ length: count }, (_, id) => ({
+    id,
+    radius,
+    position: {
+      x: (Math.random() - 0.5) * 400,
+      y: (Math.random() - 0.5) * 300,
+    },
+    velocity: { x: id % 2 === 0 ? 40 : -40, y: 0 },
+  }));
+}
 ```
+
+`createBalls(count, radius)` uses `Array.from` to create the requested number of balls with unique IDs and the chosen radius. Random positions scatter them around the center. Some may overlap until we add collisions in step 4.
 
 ## 2. Render the array
 
-Replace `ball.tsx` with this. `BallRenderer` subscribes to the array. Each `Ball` draws its props, replacing its local state and start/end logic.
+Now one component can render as many balls as we create. In `ball.tsx` add the `BallRenderer` component below. `BallRenderer` subscribes to the array provided by Zustand and each `Ball` draws its props, replacing its local state and start/end logic.
 
 ```tsx
 import { useBallStore, type BallData } from "./store";
@@ -53,64 +67,94 @@ function Ball({ position, radius }: BallData) {
 }
 ```
 
-To render the balls, replace the `Ball` import in `scene.tsx`.
+To render the balls, replace the `Ball` import in `scene.tsx` and replace the `<group>` and its `<Ball />` inside Canvas with `<BallRenderer />`.
 
 ```tsx
-import { BallRenderer } from "./ball";
+<Canvas
+  orthographic
+  camera={{ position: [0, 0, 500], zoom: 1 }}
+  background="#ffeab6"
+  style={{ height: "100dvh" }}
+>
+  <BallRenderer />
+</Canvas>
 ```
 
-Replace the `<group>` and its `<Ball />` inside Canvas with `<BallRenderer />`.
+The store positions each ball around the canvas center, so the group's offset is no longer needed.
 
-```tsx
-<BallRenderer />
+Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision-practice). You should see two stationary red circles. Change `count` to `20` and `radius` to `20` in `store.ts`, then reload to see 20 smaller balls.
+
+## 3. Move the balls each frame
+
+Create `physics.ts` with our first transform, `moveBall`. `delta` is elapsed seconds, so `velocity * delta` gives the distance to move.
+
+```ts
+import type { BallData } from "./store.ts";
+
+export function moveBall({ position, velocity }: BallData, delta: number) {
+  position.x += velocity.x * delta;
+  position.y += velocity.y * delta;
+}
 ```
 
-The store positions each ball around the canvas center, so the group's offset is no longer needed. Keep `page.tsx` as copied.
+In `store.ts`, import it below Zustand.
 
-Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision-practice). You should see two stationary red circles.
+```ts
+import { create } from "zustand";
 
-## 3. Add movement to the store
+import { moveBall } from "./physics.ts"; // <--
+```
 
 We update Zustand immutably by creating new state without changing the existing state. `structuredClone` copies the balls and their nested positions, so `+=` only changes the copies. Returning `{ balls }` passes the new array to `set` and notifies the renderer.
+
+We create a step action to step our ball simulation forward by a delta time. This then gets called in the frame loop.
 
 In `store.ts`, add `step` to the `BallStore` type.
 
 ```ts
-step: (delta: number) => void;
+type BallStore = {
+  balls: BallData[];
+  step: (delta: number) => void; // <--
+};
 ```
 
-Change `() =>` to `(set) =>` in `create`, then add this action after `balls`.
+Change `() =>` to `(set) =>` in `create`. `set` is used to tell Zustand there is a state change.
+
+```ts
+export const useBallStore = create<BallStore>((set) => ({
+  // ...
+}));
+```
+
+Finally, add this action after `balls`.
 
 ```ts
 step: (delta) => set((state) => {
   const balls = structuredClone(state.balls);
 
-  balls.forEach(({ position, velocity }) => {
-    position.x += velocity.x * delta;
-    position.y += velocity.y * delta;
-  });
+  balls.forEach((ball) => moveBall(ball, delta));
 
   return { balls };
 }),
 ```
 
-`delta` is elapsed seconds, so `velocity * delta` is the distance to move.
-
-## 4. Advance once per frame
-
-Add this import at the top of `ball.tsx`.
+In `ball.tsx`, import `useFrame` and call `step` inside `BallRenderer` to get real-time motion.
 
 ```tsx
-import { useFrame } from "@react-three/fiber/webgpu";
+import { useFrame } from "@react-three/fiber/webgpu"; // <--
+
+import { useBallStore, type BallData } from "./store";
+
+export function BallRenderer() {
+  const balls = useBallStore((state) => state.balls);
+
+  // Advance the external data once per frame.
+  useFrame((_, delta) => useBallStore.getState().step(delta)); // <--
+
+  return balls.map((ball) => <Ball key={ball.id} {...ball} />);
+}
 ```
 
-Inside `BallRenderer`, add the frame callback after the `balls` subscription.
-
-```tsx
-// Advance the external data once per frame.
-useFrame((_, delta) => useBallStore.getState().step(delta));
-```
-
-Both balls now move, pass through each other, and leave the screen. Reload to reset. Add a third ball with a unique `id` to try the same renderer with more data.
+The balls now move, pass through each other, and leave the screen. Reload to reset. Change `count` and `radius` to try more balls at different sizes.
 
 [Run the completed step](http://localhost:5173/ball-collision-steps?step=1) · [Next, input →](../02-input/README.md)

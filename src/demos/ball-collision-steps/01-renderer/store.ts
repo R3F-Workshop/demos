@@ -1,5 +1,10 @@
 import { create } from "zustand";
 
+import { moveBall } from "./physics.ts";
+
+const count = 2;
+const radius = 40;
+
 export type Vec2 = { x: number; y: number };
 export type BallData = {
   id: number;
@@ -14,19 +19,25 @@ type BallStore = {
 };
 
 export const useBallStore = create<BallStore>((set) => ({
-  balls: [
-    { id: 0, position: { x: -100, y: 0 }, velocity: { x: 40, y: 0 }, radius: 40 },
-    { id: 1, position: { x: 100, y: 0 }, velocity: { x: -40, y: 0 }, radius: 40 },
-  ],
+  balls: createBalls(count, radius),
 
   step: (delta) => set((state) => {
     const balls = structuredClone(state.balls);
 
-    balls.forEach(({ position, velocity }) => {
-      position.x += velocity.x * delta;
-      position.y += velocity.y * delta;
-    });
+    balls.forEach((ball) => moveBall(ball, delta));
 
     return { balls };
   }),
 }));
+
+function createBalls(count: number, radius: number): BallData[] {
+  return Array.from({ length: count }, (_, id) => ({
+    id,
+    radius,
+    position: {
+      x: (Math.random() - 0.5) * 400,
+      y: (Math.random() - 0.5) * 300,
+    },
+    velocity: { x: id % 2 === 0 ? 40 : -40, y: 0 },
+  }));
+}
