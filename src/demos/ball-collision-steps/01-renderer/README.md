@@ -1,12 +1,21 @@
 # 1. From Ball to BallRenderer
 
+*ava note*To Do: expand on this
+Our example uses internal state but to scale up we want to move state out to an external store.
+
+This will begin by removing  useState and replace it with a Zustand store.
+
+Since we are now updating state for all balls, we move our useFrame up to BallRenderer
+
 Move the ball data into Zustand, render an array of balls, then move them with one frame callback.
 
-Copy `page.tsx`, `scene.tsx`, and `ball.tsx` from [the simple demo](../../ball-collision-simple/) into `src/demos/ball-collision-practice`. Make the following edits there. The files beside this guide contain the completed version.
+*ava note*: explicitely tell them to create a folder for the practice 
+Create a folder `src/demos/ball-collision-practice` and copy `page.tsx`, `scene.tsx`, and `ball.tsx` from [the simple demo](../../ball-collision-simple/) into it. Make the following edits there. The files beside this guide contain the completed version.
 
 ## 1. Create the ball store
 
-It all begins with the data model. We are modeling the balls with position, velocity and radius. Create `store.ts` with `count` and `radius` as the settings to change.
+*ava note* explicitely tell them where to put store.ts
+It all begins with the data model. We are modeling the balls with position, velocity and radius. Create `store.ts` in `src/demos/ball-collision-practice` with `count` and `radius` as the settings to change. 
 
 ```ts
 import { create } from "zustand";
@@ -47,6 +56,7 @@ function createBalls(count: number, radius: number): BallData[] {
 
 ## 2. Render the array
 
+*ava note* tell them what code they should be getting rid of from the simple demo and why(useState, hard coded start and end point)
 Now one component can render as many balls as we create. In `ball.tsx` add the `BallRenderer` component below. `BallRenderer` subscribes to the array provided by Zustand and each `Ball` draws its props, replacing its local state and start/end logic.
 
 ```tsx
