@@ -11,7 +11,7 @@ pnpm install
 pnpm dev
 ```
 
-Open a demo at `http://localhost:5173/<route>`, for example
+Open a demo at `http://localhost:5173/<route>`.
 
 ## Available demos
 
@@ -30,4 +30,3 @@ Open a demo at `http://localhost:5173/<route>`, for example
 | `/takehome-grid` | Six flipping tiles introducing the other demos. |
 | `/block-city` | Hundreds of animated, instanced blocks. |
 | `/postprocessing` | Bloom and ambient occlusion with adjustable controls. |
-`
