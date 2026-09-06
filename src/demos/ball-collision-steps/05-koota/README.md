@@ -2,7 +2,7 @@
 
 Keep the same balls, physics, pointer events and meshes. Change how the data is stored and updated.
 
-Continue in `src/demos/ball-collision-practice` from [lesson 4](../04-collisions/README.md). Koota is already installed. The files beside this guide contain the completed version.
+Continue in `src/demos/ball-collision` from [lesson 4](../04-collisions/README.md). Koota is already installed. The files beside this guide contain the completed version.
 
 | Zustand example | Koota equivalent |
 | --- | --- |
@@ -245,7 +245,7 @@ Change the count control's `value: balls.length` to `value: count`. Keep the sli
 
 ## Try it
 
-Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision-practice). Drag one ball into another, fling it against a wall, then change Balls and Radius. Each slider change should reset positions, momentum and drag while keeping the other setting.
+Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision). Drag one ball into another, fling it against a wall, then change Balls and Radius. Each slider change should reset positions, momentum and drag while keeping the other setting.
 
 Compare with [the Zustand step](http://localhost:5173/ball-collision-steps?step=4) and [the completed Koota step](http://localhost:5173/ball-collision-steps?step=5). Both still use React props, one mesh per ball and all-pairs collisions. This migration changes state management, not those scaling limits.
 

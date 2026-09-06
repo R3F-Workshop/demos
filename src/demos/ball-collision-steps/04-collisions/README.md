@@ -2,7 +2,7 @@
 
 Next we will plug collision handling into our simulation. It separates overlapping balls and changes their velocities so they bounce, while keeping a grabbed ball under the pointer.
 
-Continue in `src/demos/ball-collision-practice` from [lesson 3](../03-walls/README.md).
+Continue in `src/demos/ball-collision` from [lesson 3](../03-walls/README.md).
 
 ## 1. Add collisions
 
@@ -67,7 +67,7 @@ step: (delta, bounds) => set((state) => {
 }),
 ```
 
-Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision-practice). Watch the balls bounce apart, then drag one into the other and try a gentle fling. Increase `count` in `store.ts` to try more pairs, and reduce `radius` to fit more balls on screen. Fast flings can skip collisions between frames.
+Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision). Watch the balls bounce apart, then drag one into the other and try a gentle fling. Increase `count` in `store.ts` to try more pairs, and reduce `radius` to fit more balls on screen. Fast flings can skip collisions between frames.
 
 ## 2. Add performance monitor and controls
 

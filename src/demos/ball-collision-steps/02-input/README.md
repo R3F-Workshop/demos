@@ -2,7 +2,7 @@
 
 Next we will enable grabbing a ball, moving it with the pointer, and releasing it with momentum. Ball handles input while Zustand keeps the data.
 
-Continue in `src/demos/ball-collision-practice` from [lesson 1](../01-renderer/README.md).
+Continue in `src/demos/ball-collision` from [lesson 1](../01-renderer/README.md).
 
 ## 1. Model a drag
 
@@ -160,7 +160,7 @@ return (
 );
 ```
 
-Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision-practice). Grab near a ball's edge, drag it around, and let go. It should follow the pointer and stay where you release it. You can grab it again. Reload if the other ball has left the screen.
+Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision). Grab near a ball's edge, drag it around, and let go. It should follow the pointer and stay where you release it. You can grab it again. Reload if the other ball has left the screen.
 
 ## 3. Give the ball fling velocity
 

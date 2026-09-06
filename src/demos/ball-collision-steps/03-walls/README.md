@@ -2,7 +2,7 @@
 
 Think about walls in three parts. Define where a ball is allowed to be, correct it when it leaves, then apply the same rule to each edge.
 
-Continue in `src/demos/ball-collision-practice` from [lesson 2](../02-input/README.md).
+Continue in `src/demos/ball-collision` from [lesson 2](../02-input/README.md).
 
 ## 1. Define the limits
 
@@ -67,7 +67,7 @@ In `ball.tsx`, update the frame callback inside `BallRenderer`.
 useFrame(({ size }, delta) => useBallStore.getState().step(delta, size)); // <--
 ```
 
-Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision-practice). Drag a ball across an edge and back. The console should switch between `on screen` and `past an edge`.
+Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision). Drag a ball across an edge and back. The console should switch between `on screen` and `past an edge`.
 
 ## 2. Give the ball a response
 
