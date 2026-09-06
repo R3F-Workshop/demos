@@ -1,12 +1,12 @@
 # Ball collision, step by step
 
-Build on [the simple ball](../ball-collision-simple/ball.tsx). Each folder contains a complete step, with instructions beside the code.
+Start with [lesson 1](01-renderer/README.md), then keep building in the same `src/demos/ball-collision-practice` folder. Each guide shows every edit needed for the next step.
 
-Run `pnpm dev` and open [the demo](http://localhost:5173/ball-collision-steps).
+1. [BallRenderer](01-renderer/README.md) moves state into Zustand and renders multiple balls.
+2. [Input](02-input/README.md) adds dragging and fling velocity to each Ball.
+3. [Walls](03-walls/README.md) keeps balls inside the canvas.
+4. [Collisions](04-collisions/README.md) makes balls bounce off each other.
 
-1. [BallRenderer](01-renderer/README.md): move state into Zustand and render multiple balls.
-2. [Input](02-input/README.md): drag a ball and release it with velocity.
-3. [Walls](03-walls/README.md): keep balls inside the canvas.
-4. [Collisions](04-collisions/README.md): make balls bounce off each other.
+Run `pnpm dev` and open [your practice demo](http://localhost:5173/ball-collision-practice). Change `count` and `radius` in `store.ts` to try different amounts and sizes. At the end of step 4, add Devtools with sliders and an FPS counter. Balls can leave the screen until step 3.
 
-Each lesson’s `page.tsx` renders its `scene.tsx`, which contains the Canvas. Compare the same files between steps. Reload to reset. Balls can leave the screen until step 3.
+[Explore the completed steps](http://localhost:5173/ball-collision-steps).
