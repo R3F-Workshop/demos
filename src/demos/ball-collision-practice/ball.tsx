@@ -6,7 +6,7 @@ export function BallRenderer() {
   const balls = useBallStore((state) => state.balls);
 
   //advance the external data once per frame 
-  useFrame((_, delta) => useBallStore.getState().step(delta)); 
+  useFrame(({size}, delta) => useBallStore.getState().step(delta, size)); 
 
   return balls.map((ball) => <Ball key={ball.id} {...ball} />);
 }
@@ -51,7 +51,7 @@ function Ball({ id, position, radius }: BallData) {
         y: (point.y - drag.offset.y - ball.position.y) * 100,
       },
     });
-  }
+  } 
 
   function onPointerUp(event: ThreeEvent<PointerEvent>) {
     const { drag } = useBallStore.getState();
