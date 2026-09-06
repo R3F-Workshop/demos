@@ -12,20 +12,40 @@ export type BallData = {
   radius: number;
 };
 
+type Drag = {
+  id: number;
+  pointerId: number;
+  offset: Vec2;
+};
+
 type BallStore = {
   balls: BallData[];
+  drag: Drag | null; 
   step: (delta: number) => void; 
+  setBall: (id: number, changes: Partial<BallData>) => void; 
+  setDrag: (drag: Drag | null) => void; 
 };
 
 export const useBallStore = create<BallStore>((set) => ({
   balls: createBalls(count, radius),
+  drag: null, 
   step: (delta) => set((state) => {
-  const balls = structuredClone(state.balls);
+    const balls = structuredClone(state.balls);
 
-  balls.forEach((ball) => moveBall(ball, delta));
+    balls.forEach((ball) => {
+      if (ball.id !== state.drag?.id) moveBall(ball, delta); // <--
+    });
 
-  return { balls };
-}),
+    return { balls };
+  }),
+  setBall: (id, changes) => set((state) => ({
+    balls: state.balls.map((ball) => {
+      if (ball.id !== id) return ball;
+      return { ...ball, ...changes };
+    }),
+  })),
+
+  setDrag: (drag) => set({ drag }),
 }));
 
 function createBalls(count: number, radius: number): BallData[] {
