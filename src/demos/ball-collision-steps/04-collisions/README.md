@@ -159,4 +159,4 @@ Finally, import `Devtools` in `scene.tsx` and enable it beside `BallRenderer` in
 
 Try the Balls and Radius sliders. Each change resets positions and momentum while keeping the other setting. Add more balls and watch the FPS counter to stress test the simulation.
 
-[Run the completed step](http://localhost:5173/ball-collision-steps?step=4) · [Back to overview](../README.md)
+[Run the completed step](http://localhost:5173/ball-collision-steps?step=4) · [Next, Koota →](../05-koota/README.md)

@@ -2,6 +2,7 @@ import Renderer from "./01-renderer/page";
 import Input from "./02-input/page";
 import Walls from "./03-walls/page";
 import Collisions from "./04-collisions/page";
+import Koota from "./05-koota/page";
 
 export default function BallCollisionStepsPage() {
   const lessons = [
@@ -9,6 +10,7 @@ export default function BallCollisionStepsPage() {
     { id: "2", Demo: Input },
     { id: "3", Demo: Walls },
     { id: "4", Demo: Collisions },
+    { id: "5", Demo: Koota },
   ];
   const step = new URLSearchParams(window.location.search).get("step");
   const current = lessons.find((lesson) => lesson.id === step) ?? lessons[0];
