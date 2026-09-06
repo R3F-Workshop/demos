@@ -10,7 +10,7 @@ export function moveBalls(world: World, delta: number) {
     // Friction slows the ball after release.
     velocity.x *= 0.99 ** (delta * 60);
     velocity.y *= 0.99 ** (delta * 60);
-  }, { changeDetection: "never" });
+  });
 }
 
 export function bounceOffWalls(world: World, { width, height }: { width: number; height: number }) {
@@ -35,7 +35,7 @@ export function bounceOffWalls(world: World, { width, height }: { width: number;
       position.y = top;
       velocity.y = -Math.abs(velocity.y);
     }
-  }, { changeDetection: "never" });
+  });
 }
 
 export function collideBalls(world: World) {
