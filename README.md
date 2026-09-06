@@ -27,6 +27,7 @@ Each demo is `/<slug>`; there is no index page:
 | --- | --- |
 | `/ball-collision-simple` | A flat red circle bouncing between two bounds, with React state driving a Three.js mesh. |
 | `/ball-collision-zustand` | Zustand owns the balls. Drag, fling, and collide them, with count and radius sliders for stress testing. |
+| `/ball-collision-koota` | The same simulation with a Koota world, traits, systems, and actions. [Glossary](src/demos/ball-collision-koota/README.md). |
 | `/ball-collision-steps` | Four runnable lessons with plain Markdown: renderer, drag and fling, walls, then ball collisions. [Start here](src/demos/ball-collision-steps/README.md). |
 | `/paris-hero` | The workshop site's hero: tower, generated Paris, `@pmndrs/sky`, FSR3, one MRT post graph. |
 | `/magic-box` | A portal cube, six faces, the numeral ten in six writing systems. |

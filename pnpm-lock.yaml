@@ -32,6 +32,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      koota:
+        specifier: 0.6.6-canary.6a5c1c2
+        version: 0.6.6-canary.6a5c1c2(@types/react@19.2.18)(react@19.2.8)
       leva:
         specifier: ^0.10.1
         version: 0.10.1(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -1597,6 +1600,20 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
+
+  koota@0.6.6-canary.6a5c1c2:
+    resolution: {integrity: sha512-9OnDiUz853IQyunG/fWi6hY/d6xCmDOG3w4wqN9Pv0+hO18uV1th72H4pNNBV4ODsUdvK/yzATjWg2XKA6ywzg==}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      react: '>=18.0.0'
+      svelte: '>=5.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
 
   ktx-parse@1.1.0:
     resolution: {integrity: sha512-mKp3y+FaYgR7mXWAbyyzpa/r1zDWeaunH+INJO4fou3hb45XuNSwar+7llrRyvpMWafxSIi99RNFJ05MHedaJQ==}
@@ -3559,6 +3576,11 @@ snapshots:
   json-schema-traverse@0.4.1: {}
 
   json5@2.2.3: {}
+
+  koota@0.6.6-canary.6a5c1c2(@types/react@19.2.18)(react@19.2.8):
+    optionalDependencies:
+      '@types/react': 19.2.18
+      react: 19.2.8
 
   ktx-parse@1.1.0: {}
 
