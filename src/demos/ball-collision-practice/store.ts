@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { moveBall, bounceOffWalls, type Bounds } from "./physics.ts";
+import { moveBall, bounceOffWalls, collideBalls, type Bounds } from "./physics.ts";
 
 const count = 20;
 const radius = 20;
@@ -20,6 +20,8 @@ type Drag = {
 
 type BallStore = {
   balls: BallData[];
+  radius: number; 
+  restart: (settings: { count?: number; radius?: number }) => void;
   drag: Drag | null; 
   step: (delta: number, bounds: Bounds) => void;
   setBall: (id: number, changes: Partial<BallData>) => void; 
@@ -28,10 +30,17 @@ type BallStore = {
 
 export const useBallStore = create<BallStore>((set) => ({
   balls: createBalls(count, radius),
+  radius, 
   drag: null, 
+  restart: (settings) => set((state) => { // <--
+    const { count = state.balls.length, radius = state.radius } = settings;
+    return { balls: createBalls(count, radius), radius, drag: null };
+  }),
   step: (delta, bounds) => set((state) => {
     const balls = structuredClone(state.balls);
 
+    collideBalls(balls, state.drag?.id); 
+    
     balls.forEach((ball) => {
       if (ball.id !== state.drag?.id) moveBall(ball, delta);
       bounceOffWalls(ball, bounds); // <--

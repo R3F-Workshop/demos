@@ -1,8 +1,7 @@
 import { Canvas } from "@react-three/fiber/webgpu";
-
 import { BallRenderer } from "./ball";
-
 import { useBallStore } from "./store";
+import { Devtools } from "./devtools";
 
 export function BallCollisionScene() {
   return (
@@ -13,7 +12,8 @@ export function BallCollisionScene() {
       style={{ height: "100dvh", touchAction: "none", userSelect: "none" }}
       onLostPointerCapture={() => useBallStore.getState().setDrag(null)}
     >
-      <BallRenderer />    
+      <BallRenderer />   
+      <Devtools /> 
     </Canvas>
   );
 }

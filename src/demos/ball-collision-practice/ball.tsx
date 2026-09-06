@@ -67,6 +67,7 @@ function Ball({ id, position, radius }: BallData) {
   return (
     <mesh 
       position={[position.x, position.y, 0]}
+      scale={radius}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
