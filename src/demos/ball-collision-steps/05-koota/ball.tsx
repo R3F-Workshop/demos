@@ -14,8 +14,6 @@ export function BallRenderer() {
     collideBalls(world);
     moveBalls(world, delta);
     bounceOffWalls(world, size);
-    // Notify subscribers after direct collision writes.
-    world.query(Position).forEach((entity) => entity.changed(Position));
   });
 
   return balls.map((entity) => <Ball key={entity} entity={entity} />);
