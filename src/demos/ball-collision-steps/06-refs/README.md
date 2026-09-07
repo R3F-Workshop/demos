@@ -80,7 +80,7 @@ See [ball.tsx](ball.tsx) for the completed code.
 
 ## Optional: Optimizing even further
 
-Each ball still registers its own `useFrame`, so N balls means N callbacks just to sync positions. A next step is to move that sync into a single `useFrame` that updates all N meshes after physics. The same meshes still need updating, but one shared callback could reduce the scheduling overhead.
+Each ball still registers its own `useFrame`, so N balls means N callbacks just to sync positions. A next step is to move that sync into a single `useFrame` that updates all N meshes after physics. The same meshes still need updating, but one shared callback could reduce the scheduling overhead. How would you do this?
 
 Try exploring this with a large ball count and compare frame times.
 
