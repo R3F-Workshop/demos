@@ -17,7 +17,7 @@
     "@pmndrs/sky": "link:./vendor/pmndrs-sky",
     "@pmndrs/upscaler": "^0.2.0",
     "@react-three/drei": "11.0.0-alpha.7",
-    "@react-three/fiber": "10.0.0-canary.c385e9f",
+    "@react-three/fiber": "10.0.0-canary.4f316e6",
     "@react-three/rapier": "^2.2.0",
     "camera-controls": "^3.1.0",
     "clsx": "^2.1.1",
