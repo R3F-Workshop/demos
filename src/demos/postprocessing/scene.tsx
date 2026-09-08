@@ -9,9 +9,9 @@ import { Suspense } from "react";
 import { ACESFilmicToneMapping } from "three/webgpu";
 
 import { ContactShadows } from "@react-three/drei/webgpu";
-import type { PostprocessingConfig } from "./config";
-import { Postprocessing } from "./Postprocessing";
-import { Robot } from "./Robot";
+import type { PostprocessingConfig } from "./misc/config";
+import { Robot } from "./misc/Robot";
+import { PostprocessingExisting } from "./PostprocessingExisting";
 
 /** Uses an independent renderer outside the shared homepage canvas. */
 export function PostprocessingScene({
@@ -31,6 +31,8 @@ export function PostprocessingScene({
         toneMapping: ACESFilmicToneMapping,
       }}
     >
+      <PostprocessingExisting config={config} />
+
       <color attach="background" args={["#252525"]} />
 
       <Environment preset="sunset" blur={0.8} />
@@ -69,7 +71,6 @@ export function PostprocessingScene({
         far={100}
       />
       <OrbitControls makeDefault />
-      <Postprocessing config={config} />
     </Canvas>
   );
 }

@@ -5,7 +5,7 @@ import { ao } from "three/examples/jsm/tsl/display/GTAONode.js";
 import * as TSL from "three/tsl";
 import * as THREE from "three/webgpu";
 
-import type { PostprocessingConfig } from "./config";
+import type { PostprocessingConfig } from "./misc/config";
 
 type FloatUniform = THREE.UniformNode<"float", number>;
 type Knobs = Record<
@@ -18,7 +18,11 @@ type Knobs = Record<
   FloatUniform
 >;
 
-export function Postprocessing({ config }: { config: PostprocessingConfig }) {
+export function PostprocessingExisting({
+  config,
+}: {
+  config: PostprocessingConfig;
+}) {
   const u = useUniforms(
     {
       bloomStrength: config.bloomStrength,

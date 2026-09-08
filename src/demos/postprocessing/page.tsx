@@ -1,11 +1,11 @@
-import { PostprocessingDemo } from "./postprocessing-demo";
+import { PostprocessingDemo } from "./misc/postprocessing-demo";
 
 export default function PostprocessingDemoPage() {
   return (
     <main className="relative h-dvh w-full overflow-hidden bg-background">
       <PostprocessingDemo />
 
-      {/* Title plate. pointer-events-none so it never intercepts the cursor. */}
+      {/* /* Title plate. pointer-events-none so it never intercepts the cursor. */}
       <div className="pointer-events-none absolute top-5 left-5 z-30 max-w-[min(430px,calc(100vw-2.5rem))]">
         <div className="font-mono text-[11px] tracking-[0.13em] text-faint uppercase">
           Demo · made with R3F v10
