@@ -1,7 +1,7 @@
 import { ControlsToggle } from "@/components/controls-toggle";
 import { useWebGPU } from "@/lib/use-webgpu";
 
-import { PostprocessingScene } from "../Scene";
+import { PostprocessingScene } from "../scene";
 import { POSTPROCESSING_DEFAULTS } from "./config";
 
 const d = POSTPROCESSING_DEFAULTS;
