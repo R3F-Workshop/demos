@@ -24,7 +24,7 @@ interface SSAOPass {
   useScreenSpaceSampling: { value: boolean };
   useLinearThickness: { value: boolean };
   useTemporalFiltering: boolean;
-  getAONode(): { r: unknown };
+  getAONode(): { r: AnyFloat };
 }
 
 /** Runtime controls exposed by the SSGI node. */
@@ -35,7 +35,7 @@ interface SSGIPass {
   giIntensity: { value: number };
   aoIntensity: { value: number };
   useTemporalFiltering: boolean;
-  getAONode(): { r: unknown };
+  getAONode(): { r: AnyFloat };
   getGINode(): unknown;
 }
 
@@ -62,9 +62,9 @@ export interface TextLayer {
 }
 
 /** TSL node shapes used at graph helper boundaries. */
-type AnyFloat = ReturnType<typeof TSL.float>;
-type AnyVec3 = ReturnType<typeof TSL.vec3>;
-type AnyVec4 = ReturnType<typeof TSL.vec4>;
+type AnyFloat = THREE.Node<"float">;
+type AnyVec3 = THREE.Node<"vec3">;
+type AnyVec4 = THREE.Node<"vec4">;
 
 function makeFogCameraUniforms() {
   return {
@@ -323,7 +323,7 @@ export function FX({
       const color = scenePass.getTextureNode("output");
       const depth = scenePass.getTextureNode("depth");
 
-      let graph = color;
+      let graph: AnyVec4 = color;
 
       /** Tower bloom, reused as the light the lettering responds to. */
       let bloomTex: AnyVec4 | null = null;
@@ -341,7 +341,7 @@ export function FX({
       // Unpack byte-encoded normals through a shared sampling node.
       const sceneNormal =
         useGtao || useSsgi
-          ? TSL.sample((uv: unknown) =>
+          ? TSL.sample((uv) =>
               TSL.unpackRGBToNormal(
                 scenePass.getTextureNode("normal").sample(uv),
               ),
@@ -369,7 +369,7 @@ export function FX({
           depth,
           sceneNormal,
           camera as THREE.PerspectiveCamera,
-        ) as unknown as { rgb: unknown };
+        ) as unknown as { rgb: AnyVec3 };
         const albedo = scenePass.getTextureNode("diffuse");
         graph = TSL.vec4(
           graph.rgb.mul(giPass.getAONode().r).add(albedo.rgb.mul(gi.rgb)),
@@ -493,7 +493,7 @@ export function FX({
         );
         nextFsrNode = fsrNode as unknown as FSRNodeLike;
         velocityBoundRef.current = false;
-        graph = fsrNode;
+        graph = fsrNode as AnyVec4;
       } else {
         // Use TRAA as the temporal resolver when FSR3 is disabled.
         const traaPass = traa(

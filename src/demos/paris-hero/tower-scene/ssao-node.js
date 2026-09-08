@@ -19,7 +19,10 @@ class SSAONode extends TempNode {
 
 	}
 
-	/** Constructs a new SSAO node. */
+	/**
+	 * Constructs a new SSAO node.
+	 * @param {import('three/webgpu').TextureNode | null} alphaNode
+	 */
 	constructor( depthNode, normalNode, camera, alphaNode = null ) {
 
 		super( 'vec4' );
@@ -390,5 +393,8 @@ class SSAONode extends TempNode {
 
 export default SSAONode;
 
-/** TSL function for creating a SSAO effect. */
+/**
+ * TSL function for creating a SSAO effect.
+ * @param {import('three/webgpu').TextureNode | null} alphaNode
+ */
 export const ssao = ( depthNode, normalNode, camera, alphaNode = null ) => new SSAONode( depthNode, normalNode, camera, alphaNode );

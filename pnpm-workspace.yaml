@@ -1,7 +1,5 @@
-# react-three-rapier 2.x pins its peer to R3F v9. It only reaches for `useFrame`
-# and `useThree`, and R3F v10 shares its store across entries through a global
-# symbol, so hooks from the root entry find the WebGPU Canvas. The range is
-# stale rather than wrong.
+managePackageManagerVersions: true
+
 peerDependencyRules:
   allowedVersions:
     "@react-three/rapier>@react-three/fiber": ">=10.0.0-0 <11"
