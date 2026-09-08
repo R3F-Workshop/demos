@@ -18,7 +18,7 @@ type Knobs = Record<
   FloatUniform
 >;
 
-export function PostprocessingExisting({
+export function PostprocessingReference({
   config,
 }: {
   config: PostprocessingConfig;

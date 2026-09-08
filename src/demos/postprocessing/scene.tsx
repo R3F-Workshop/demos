@@ -30,7 +30,7 @@ export function PostprocessingScene({
         toneMapping: ACESFilmicToneMapping,
       }}
     >
-      {/* <PostprocessingExisting config={config} /> */}
+      {/* <PostprocessingReference config={config} /> */}
 
       <color attach="background" args={["#252525"]} />
 
