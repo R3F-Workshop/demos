@@ -11,7 +11,6 @@ import { ACESFilmicToneMapping } from "three/webgpu";
 import { ContactShadows } from "@react-three/drei/webgpu";
 import type { PostprocessingConfig } from "./misc/config";
 import { Robot } from "./misc/Robot";
-import { PostprocessingExisting } from "./PostprocessingExisting";
 
 /** Uses an independent renderer outside the shared homepage canvas. */
 export function PostprocessingScene({
@@ -31,7 +30,7 @@ export function PostprocessingScene({
         toneMapping: ACESFilmicToneMapping,
       }}
     >
-      <PostprocessingExisting config={config} />
+      {/* <PostprocessingExisting config={config} /> */}
 
       <color attach="background" args={["#252525"]} />
 
