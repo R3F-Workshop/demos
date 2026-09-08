@@ -149,7 +149,7 @@ export function bounceOffWalls(world: World, { width, height }: { width: number;
 }
 ```
 
-For collisions, `getPages()` gives direct access to trait arrays. Add this loop to visit each pair once. `indices` holds data offsets, while `entities` identifies the held ball.
+For collisions, we are going low level to get the most performance. Explaining this is a whole lot more than we want to get into today but feel free to ask if you want to learn more. Go ahead and replace the old `collideBalls` with the new one.
 
 ```ts
 export function collideBalls(world: World) {
@@ -173,44 +173,38 @@ export function collideBalls(world: World) {
 
         for (let j = q === pageA.index ? i + 1 : 0; j < pageB.indices.length; j++) {
           const b = pageB.indices[j];
-          // Resolve this pair here
+          const dx = positionBX[b] - positionAX[a];
+          const dy = positionBY[b] - positionAY[a];
+          const distance = Math.hypot(dx, dy);
+          const overlap = radiusA + radiusBPage[b] - distance;
+          if (overlap <= 0) continue;
+
+          const normalX = distance === 0 ? 1 : dx / distance;
+          const normalY = distance === 0 ? 0 : dy / distance;
+          const moveA = pageA.entities[i] === held ? 0 : 1;
+          const moveB = pageB.entities[j] === held ? 0 : 1;
+          const share = moveA + moveB;
+
+          // Free balls separate while the held ball stays under the pointer.
+          positionAX[a] -= normalX * overlap * moveA / share;
+          positionAY[a] -= normalY * overlap * moveA / share;
+          positionBX[b] += normalX * overlap * moveB / share;
+          positionBY[b] += normalY * overlap * moveB / share;
+
+          // Only exchange momentum when the balls are approaching.
+          const relativeSpeed = (velocityBX[b] - velocityAX[a]) * normalX +
+            (velocityBY[b] - velocityAY[a]) * normalY;
+          if (relativeSpeed >= 0) continue;
+          const impulse = -2 * relativeSpeed / share;
+          velocityAX[a] -= impulse * normalX * moveA;
+          velocityAY[a] -= impulse * normalY * moveA;
+          velocityBX[b] += impulse * normalX * moveB;
+          velocityBY[b] += impulse * normalY * moveB;
         }
       }
     }
   }
 }
-```
-
-Replace `// Resolve this pair here` with the separation and impulse calculation from lesson 4, adapted to the trait arrays:
-
-```ts
-const dx = positionBX[b] - positionAX[a];
-const dy = positionBY[b] - positionAY[a];
-const distance = Math.hypot(dx, dy);
-const overlap = radiusA + radiusBPage[b] - distance;
-if (overlap <= 0) continue;
-
-const normalX = distance === 0 ? 1 : dx / distance;
-const normalY = distance === 0 ? 0 : dy / distance;
-const moveA = pageA.entities[i] === held ? 0 : 1;
-const moveB = pageB.entities[j] === held ? 0 : 1;
-const share = moveA + moveB;
-
-// Free balls separate while the held ball stays under the pointer.
-positionAX[a] -= normalX * overlap * moveA / share;
-positionAY[a] -= normalY * overlap * moveA / share;
-positionBX[b] += normalX * overlap * moveB / share;
-positionBY[b] += normalY * overlap * moveB / share;
-
-// Only exchange momentum when the balls are approaching.
-const relativeSpeed = (velocityBX[b] - velocityAX[a]) * normalX +
-  (velocityBY[b] - velocityAY[a]) * normalY;
-if (relativeSpeed >= 0) continue;
-const impulse = -2 * relativeSpeed / share;
-velocityAX[a] -= impulse * normalX * moveA;
-velocityAY[a] -= impulse * normalY * moveA;
-velocityBX[b] += impulse * normalX * moveB;
-velocityBY[b] += impulse * normalY * moveB;
 ```
 
 ## 5. Subscribe to each ball
