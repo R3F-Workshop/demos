@@ -6,7 +6,6 @@ import {
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber/webgpu";
 import { Suspense } from "react";
-import { ACESFilmicToneMapping } from "three/webgpu";
 
 import { ContactShadows } from "@react-three/drei/webgpu";
 import type { PostprocessingConfig } from "./misc/config";
@@ -19,17 +18,7 @@ export function PostprocessingScene({
   config: PostprocessingConfig;
 }) {
   return (
-    <Canvas
-      shadows
-      dpr={[1, 2]}
-      // Odd/fractional drawing buffers desync the depth attachment from the swap chain: see DepthAttachmentSync.
-      forceEven
-      renderer={{
-        alpha: false,
-        antialias: true,
-        toneMapping: ACESFilmicToneMapping,
-      }}
-    >
+    <Canvas shadows>
       {/* <PostprocessingReference config={config} /> */}
 
       <color attach="background" args={["#252525"]} />
@@ -45,7 +34,6 @@ export function PostprocessingScene({
         shadow-bias={-0.0002}
       />
 
-      {/* Suspense inside the Canvas: a promise thrown past it would unmount the root. */}
       <Suspense fallback={null}>
         <Bounds fit clip observe margin={1.5}>
           <Robot />
